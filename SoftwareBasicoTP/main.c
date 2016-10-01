@@ -136,7 +136,7 @@ void writeFile(char* output[], int input_size){
     if (fp == NULL)
         printf("Endereco invalido");
     
-    fprintf(fp, "DEPTH = 256;\n");
+    fprintf(fp, "DEPTH = %d;\n", input_size);
     fprintf(fp, "WIDTH = 16;\n");
     fprintf(fp, "ADDRESS_RADIX = HEX;\n");
     fprintf(fp, "DATA_RADIX = BIN;\n");
@@ -146,7 +146,7 @@ void writeFile(char* output[], int input_size){
     
     for(int i = 0; i < input_size; i++){
         
-        fprintf(fp, "%X:%s\n", i, output[i]);
+        fprintf(fp, "%X : %s\n", i, output[i]);
     }
     
     fprintf(fp, "END\n");
