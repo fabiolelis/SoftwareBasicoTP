@@ -1,3 +1,8 @@
 _label1 inst1 op1 op2
 _label2 inst2 op3 op4
-inst3 op5 op6
+_label3 inst2 op5 op6
+_label4 inst2 op6 op7
+_label5 inst2 op8 op9
+_label5 inst2 op8 op9
+_label5 inst2 op8 op9
+_label5 inst2 op8 op9
