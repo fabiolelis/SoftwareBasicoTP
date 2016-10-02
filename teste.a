@@ -1,13 +1,6 @@
-_label1 inst1 op1 op2
-_label2 inst2 op3 op4
-_label3 inst2 op5 op6
-_label4 inst2 op6 op7
-_label5 inst2 op8 op9
-_label5 inst2 op8 op9
-_label5 inst2 op8 op9
-_label5 inst2 op8 op9
-_label7 inst2 op8 op9
-_label7 inst2 op8 op9
-_label7 inst2 op8 op9
-_label7 inst2 op8 op9
+_load1 loadi R0 150
+_load2 loadi R1 151
+_add1 add R0 R1
+_store1 storei R0 152
+_end exit
 

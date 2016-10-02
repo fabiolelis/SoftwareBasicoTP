@@ -9,51 +9,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Decoder.h"
+
+
+const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/teste.a";
+const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/output.mif";
 
 void readFile();
 void split_line();
 int check_label();
-void decode(char* line[], char* output[], int line_number);
-void writeFile(char* output[], int input_size);
+void writeFile(char** output, int input_size);
 
+/*
 enum Instruction_Fragment{
     label,
     instruction,
     first_operator,
     second_operator
 };
+*/
 
 int current_fragment;
 
 
 int main(int argc, const char * argv[]) {
     
-    enum Instruction_Fragment inst_fragment;
-    inst_fragment = label;
+    //enum Instruction_Fragment inst_fragment;
+    //inst_fragment = label;
     
-    char* input[1000];
-    
+    char** input = (char**)malloc(sizeof(char) * 256 * 30);
     int input_size = 0;
     readFile(input, &input_size);
-    char* output[input_size];
-
+    char** output = (char**)malloc(sizeof(char) * 256 * 30);
+    init_output(output);
+    int line_number = 0;
     
+    //printf("%s %d \n", input[0], input_size);
     
-    printf("%s %d \n", input[0], input_size);
-    
-    for(int line_number = 0; line_number < input_size; line_number++){
+    for(line_number = 0; line_number < input_size; line_number++){
 
-        char* line[5];
-
+        char** line = (char**)malloc(sizeof(char) * 6 * 15);
         split_line(line, input[line_number]);
-        if(check_label(line[0])){
+        int has_label = check_label(line[0]);
+
+        if(has_label){
             //tem label
             //bota numa tabela?
             
         }
-        
+
         //Cada pedaço da instrucao em line[pos] agora
-        decode(line, output, line_number);
+        decode(line, output, line_number, has_label);
         
         
     }
@@ -74,13 +80,13 @@ void readFile(char* input[], int* input_size){
     ssize_t read;
     int i = 0;
     
-    fp = fopen("/Users/fabiolelis/Git/SoftwareBasicoTP/teste.a" , "r");
+    fp = fopen(file_in , "r");
     if (fp == NULL)
         printf("Endereco invalido");
     
     while ((read = getline(&line, &len, fp)) != -1) {
         
-        input[i] = (char *) malloc(16*sizeof(char));
+        input[i] = (char *) malloc(60*sizeof(char));
         strcpy(input[i], line);
         printf("%s", line);
         i++;
@@ -90,17 +96,19 @@ void readFile(char* input[], int* input_size){
     if (line)
         free(line);
     
-    *input_size = i;
+    *input_size = i - 1;
     
 }
 
-void split_line(char* line[], char* input){
+void split_line(char** line, char* input){
+    line[0] = (char *) malloc(32*sizeof(char));
     line[0] = strtok(input," ");
     
     int pos = 0;
     while (line[pos] != NULL)
     {
         pos ++;
+        line[pos] = (char *) malloc(32*sizeof(char));
         line[pos] = strtok(NULL," ");
     }
 }
@@ -116,27 +124,15 @@ int check_label(char* line){
     }
 }
 
-void decode(char* line[], char* output[], int line_number){
-    char* decoded = "0101010101010101";
-    
-    //decode line
-    
-    output[line_number] = NULL;
-    output[line_number] = (char *) malloc(20*sizeof(char));
-    
-    strcpy(output[line_number], decoded);
-    
-}
 
-
-void writeFile(char* output[], int input_size){
+void writeFile(char** output, int input_size){
     FILE* fp;
     
-    fp = fopen("/Users/fabiolelis/Git/SoftwareBasicoTP/output.mif" , "w");
+    fp = fopen(file_out , "w");
     if (fp == NULL)
         printf("Endereco invalido");
     
-    fprintf(fp, "DEPTH = %d;\n", input_size);
+    fprintf(fp, "DEPTH = %d;\n", 256);
     fprintf(fp, "WIDTH = 16;\n");
     fprintf(fp, "ADDRESS_RADIX = HEX;\n");
     fprintf(fp, "DATA_RADIX = BIN;\n");
@@ -144,7 +140,7 @@ void writeFile(char* output[], int input_size){
     fprintf(fp, "BEGIN\n");
 
     
-    for(int i = 0; i < input_size; i++){
+    for(int i = 0; i < 256; i++){
         
         fprintf(fp, "%X : %s\n", i, output[i]);
     }

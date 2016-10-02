@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "writeFile:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "output[i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "decode:Decoder.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "line[4]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "getDecoded:Decoder.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "strcmp(instruction, &quot;lofadi&quot;)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
