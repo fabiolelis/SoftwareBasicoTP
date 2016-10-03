@@ -1,5 +1,6 @@
 _load1: loadi R0 150
 _load2: loadi R1 151
+addi R0 30
 _add1: add R0 R1
 _store1: storei R0 152
 _end: exit

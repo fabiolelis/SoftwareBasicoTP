@@ -59,7 +59,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     
     char* sixteen_bit_inst = (char *) malloc(20*sizeof(char));
     
-    strcpy(sixteen_bit_inst, "0000000000000000");
+    strcpy(sixteen_bit_inst, "0000000000000000"); //em caso de instrução não reconhecida, encerra
     
     if(strcmp(instruction, "exit") == 0){
         strcpy(sixteen_bit_inst, "0000000000000000");
@@ -217,8 +217,8 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     
     if(strcmp(instruction, "addi") == 0){ //10111 000 CCCCCCCC
         strcpy(sixteen_bit_inst, "10111"); //5bits
-        strcat(sixteen_bit_inst, "000"); //3bits
-        strcat(sixteen_bit_inst, getDecimalToBinary(op1)); //8bits
+        strcat(sixteen_bit_inst, getRegisterToBinary(op1)); //3bits
+        strcat(sixteen_bit_inst, getSignedDecimalToBinary(op2)); //8bits
     }
     
     if(strcmp(instruction, "sgt") == 0){ //11000 RRR RRR RRR 00
@@ -237,7 +237,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
         strcat(sixteen_bit_inst, "00"); //2bits
     }
     
-    if(strcmp(instruction, "jmpp") == 0){ //01001 000 AAAAAAAA
+    if(strcmp(instruction, "jmpp") == 0){ //11010 000 AAAAAAAA
         strcpy(sixteen_bit_inst, "11010"); //5bits
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); //3bits
         strcat(sixteen_bit_inst, getDecimalToBinary(op2)); //8bits
@@ -303,30 +303,48 @@ char* getDecimalToBinary(char* chardec){
 
     }
     
-    //printf("bin %s\n", binary);
-    
     return binary;
 }
 
 char* getSignedDecimalToBinary(char* chardec){
+    //Complemento de dois
     
     char* binary = (char*) malloc(sizeof(char) * 8);
     int dec = atoi(chardec);
+    strcpy(binary, "0");
+
+    int decNeg = dec;
+
+    if(dec < 0){
+        dec *= -1;
+        dec --;
+    }
     
-    int div = 128;
+    int div = 64;
     while(div >= 1){
         if(dec >= div){
             strcat(binary, "1");
             dec = dec - div;
         }
-        else
+        else{
             strcat(binary, "0");
+        }
         
         div = div/2;
-        
+    
     }
     
-    //printf("bin %s\n", binary);
+    if(decNeg < 0){
+        for(int i = 0; i < 8; i++){
+            if(binary[i] == '0'){
+                binary[i] = '1';
+            }
+            else{
+                binary[i] = '0';
+            }
+        }
+    }
+    
     
     return binary;
 }
@@ -341,97 +359,38 @@ void splitInTwo(char* sixteen_bit, char* decoded1, char* decoded2){
 
 char *replace(const char *src, const char *from, const char *to)
 {
-    /*
-     * Find out the lengths of the source string, text to replace, and
-     * the replacement text.
-     */
     size_t size    = strlen(src) + 1;
     size_t fromlen = strlen(from);
     size_t tolen   = strlen(to);
-    /*
-     * Allocate the first chunk with enough for the original string.
-     */
     char *value = malloc(size);
-    /*
-     * We need to return 'value', so let's make a copy to mess around with.
-     */
     char *dst = value;
-    /*
-     * Before we begin, let's see if malloc was successful.
-     */
     if ( value != NULL )
     {
-        /*
-         * Loop until no matches are found.
-         */
         for ( ;; )
         {
-            /*
-             * Try to find the search text.
-             */
             const char *match = strstr(src, from);
             if ( match != NULL )
             {
-                /*
-                 * Found search text at location 'match'. :)
-                 * Find out how many characters to copy up to the 'match'.
-                 */
                 size_t count = match - src;
-                /*
-                 * We are going to realloc, and for that we will need a
-                 * temporary pointer for safe usage.
-                 */
                 char *temp;
-                /*
-                 * Calculate the total size the string will be after the
-                 * replacement is performed.
-                 */
                 size += tolen - fromlen;
-                /*
-                 * Attempt to realloc memory for the new size.
-                 */
                 temp = realloc(value, size);
                 if ( temp == NULL )
                 {
-                    /*
-                     * Attempt to realloc failed. Free the previously malloc'd
-                     * memory and return with our tail between our legs. :(
-                     */
                     free(value);
                     return NULL;
                 }
-                /*
-                 * The call to realloc was successful. :) But we'll want to
-                 * return 'value' eventually, so let's point it to the memory
-                 * that we are now working with. And let's not forget to point
-                 * to the right location in the destination as well.
-                 */
                 dst = temp + (dst - value);
                 value = temp;
-                /*
-                 * Copy from the source to the point where we matched. Then
-                 * move the source pointer ahead by the amount we copied. And
-                 * move the destination pointer ahead by the same amount.
-                 */
                 memmove(dst, src, count);
                 src += count;
                 dst += count;
-                /*
-                 * Now copy in the replacement text 'to' at the position of
-                 * the match. Adjust the source pointer by the text we replaced.
-                 * Adjust the destination pointer by the amount of replacement
-                 * text.
-                 */
                 memmove(dst, to, tolen);
                 src += fromlen;
                 dst += tolen;
             }
-            else /* No match found. */
+            else
             {
-                /*
-                 * Copy any remaining part of the string. This includes the null
-                 * termination character.
-                 */
                 strcpy(dst, src);
                 break;
             }

@@ -19,7 +19,7 @@ void readFile();
 void split_line();
 int check_label();
 int check_comment();
-
+int check_data();
 void writeFile(char** output, int input_size);
 
 int current_fragment;
@@ -40,10 +40,15 @@ int main(int argc, const char * argv[]) {
         split_line(line, input[line_number]);
         int has_label = check_label(line[0]);
         int is_comment = check_comment(line[0]);
+        int is_data = check_data(line[1+has_label]);
 
         if(has_label){
             //tem label
-            //bota numa tabela?
+            //TODO: tratar a ocorrencia de labels
+        }
+        if(is_data){
+            //é um .data
+            //TODO: tratar a ocorrencia do .data
         }
         if(is_comment){
             continue;
@@ -123,6 +128,15 @@ int check_comment(char* line){
         default:
             return 0;
             break;
+    }
+}
+
+int check_data(char* line){
+    if(strcmp(line, ".data") == 0){
+        return 1;
+    }
+    else{
+        return 0;
     }
 }
 
