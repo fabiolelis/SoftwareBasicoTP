@@ -18,24 +18,14 @@ const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/output.mif";
 void readFile();
 void split_line();
 int check_label();
-void writeFile(char** output, int input_size);
+int check_comment();
 
-/*
-enum Instruction_Fragment{
-    label,
-    instruction,
-    first_operator,
-    second_operator
-};
-*/
+void writeFile(char** output, int input_size);
 
 int current_fragment;
 
 
 int main(int argc, const char * argv[]) {
-    
-    //enum Instruction_Fragment inst_fragment;
-    //inst_fragment = label;
     
     char** input = (char**)malloc(sizeof(char) * 256 * 30);
     int input_size = 0;
@@ -44,20 +34,21 @@ int main(int argc, const char * argv[]) {
     init_output(output);
     int line_number = 0;
     
-    //printf("%s %d \n", input[0], input_size);
-    
     for(line_number = 0; line_number < input_size; line_number++){
 
         char** line = (char**)malloc(sizeof(char) * 6 * 15);
         split_line(line, input[line_number]);
         int has_label = check_label(line[0]);
+        int is_comment = check_comment(line[0]);
 
         if(has_label){
             //tem label
             //bota numa tabela?
-            
         }
-
+        if(is_comment){
+            continue;
+        }
+        
         //Cada pedaço da instrucao em line[pos] agora
         decode(line, output, line_number, has_label);
         
@@ -124,6 +115,17 @@ int check_label(char* line){
     }
 }
 
+int check_comment(char* line){
+    switch (line[0]) {
+        case ';':
+            return 1;
+            break;
+        default:
+            return 0;
+            break;
+    }
+}
+
 
 void writeFile(char** output, int input_size){
     FILE* fp;
@@ -133,7 +135,7 @@ void writeFile(char** output, int input_size){
         printf("Endereco invalido");
     
     fprintf(fp, "DEPTH = %d;\n", 256);
-    fprintf(fp, "WIDTH = 16;\n");
+    fprintf(fp, "WIDTH = 8;\n");
     fprintf(fp, "ADDRESS_RADIX = HEX;\n");
     fprintf(fp, "DATA_RADIX = BIN;\n");
     fprintf(fp, "CONTENT\n");
@@ -142,10 +144,10 @@ void writeFile(char** output, int input_size){
     
     for(int i = 0; i < 256; i++){
         
-        fprintf(fp, "%X : %s\n", i, output[i]);
+        fprintf(fp, "%X : %s;\n", i, output[i]);
     }
     
-    fprintf(fp, "END\n");
+    fprintf(fp, "END;\n");
     
     
     fclose(fp);

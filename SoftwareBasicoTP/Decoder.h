@@ -14,7 +14,8 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
 char* getRegisterToBinary(char* reg);
 char* getDecimalToBinary(char* chardec);
 char* getSignedDecimalToBinary(char* chardec);
-
+void splitInTwo(char* sixteen_bit, char* decoded1, char* decoded2);
+char *replace(const char *src, const char *from, const char *to);
 
 void init_output(char* output[]){
     
@@ -26,8 +27,8 @@ void init_output(char* output[]){
 
 
 void decode(char** line, char** output, int line_number, int has_label){
-    char* decoded1 = "01010101";
-    char* decoded2 = "10101010";
+    char *decoded1 = (char *) malloc(8*sizeof(char));
+    char *decoded2 = (char *) malloc(8*sizeof(char));
 
     //printf("line %s %s\n", line[0], line[1]);
     char *instruction, *op1, *op2, *op3;
@@ -57,7 +58,10 @@ void decode(char** line, char** output, int line_number, int has_label){
 void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2){
     
     char* sixteen_bit_inst = (char *) malloc(20*sizeof(char));
-    if(strcmp(instruction, "exit")){
+    
+    strcpy(sixteen_bit_inst, "0000000000000000");
+    
+    if(strcmp(instruction, "exit") == 0){
         strcpy(sixteen_bit_inst, "0000000000000000");
     }
     
@@ -195,29 +199,29 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
         strcat(sixteen_bit_inst, getDecimalToBinary(op2)); //8bits
     }
     
-    if(strcmp(instruction, "ret")){ //10100 00000000000
+    if(strcmp(instruction, "ret") == 0){ //10100 00000000000
         strcpy(sixteen_bit_inst, "1010000000000000");
     }
     
-    if(strcmp(instruction, "loadRa")){ //10101 000 AAAAAAAA
+    if(strcmp(instruction, "loadRa") == 0){ //10101 000 AAAAAAAA
         strcpy(sixteen_bit_inst, "10101"); //5bits
         strcat(sixteen_bit_inst, "000"); //3bits
         strcat(sixteen_bit_inst, getDecimalToBinary(op1)); //8bits
     }
     
-    if(strcmp(instruction, "storeRa")){ //10110 00000000000
+    if(strcmp(instruction, "storeRa")== 0){ //10110 00000000000
         strcpy(sixteen_bit_inst, "10110"); //5bits
         strcat(sixteen_bit_inst, "000"); //3bits
         strcat(sixteen_bit_inst, getDecimalToBinary(op1)); //8bits
     }
     
-    if(strcmp(instruction, "addi")){ //10111 000 CCCCCCCC
+    if(strcmp(instruction, "addi") == 0){ //10111 000 CCCCCCCC
         strcpy(sixteen_bit_inst, "10111"); //5bits
         strcat(sixteen_bit_inst, "000"); //3bits
         strcat(sixteen_bit_inst, getDecimalToBinary(op1)); //8bits
     }
     
-    if(strcmp(instruction, "sgt")){ //11000 RRR RRR RRR 00
+    if(strcmp(instruction, "sgt") == 0){ //11000 RRR RRR RRR 00
         strcpy(sixteen_bit_inst, "11000"); //5bits
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); //3bits
         strcat(sixteen_bit_inst, getRegisterToBinary(op2)); //3bits
@@ -225,7 +229,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
         strcat(sixteen_bit_inst, "00"); //2bits
     }
     
-    if(strcmp(instruction, "set")){ //11001 RRR RRR RRR 00
+    if(strcmp(instruction, "set") == 0){ //11001 RRR RRR RRR 00
         strcpy(sixteen_bit_inst, "11001"); //5bits
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); //3bits
         strcat(sixteen_bit_inst, getRegisterToBinary(op2)); //3bits
@@ -242,6 +246,9 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
          TODO: tratar jmpp label
          */
     }
+    
+    printf("%s, \n", sixteen_bit_inst);
+    splitInTwo(sixteen_bit_inst, decoded1, decoded2);
 
     
 }
@@ -249,28 +256,29 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
 
 char* getRegisterToBinary(char* reg){
     
-    if(strcmp(reg, "R0")){
+    strcpy(reg, replace(reg, "\n", ""));
+    if(strcmp(reg, "R0") == 0){
         return "000";
     }
-    if(strcmp(reg, "R1")){
+    if(strcmp(reg, "R1") == 0){
         return "001";
     }
-    if(strcmp(reg, "R2")){
+    if(strcmp(reg, "R2") == 0){
         return "010";
     }
-    if(strcmp(reg, "R3")){
+    if(strcmp(reg, "R3") == 0){
         return "011";
     }
-    if(strcmp(reg, "R4")){
+    if(strcmp(reg, "R4") == 0){
         return "100";
     }
-    if(strcmp(reg, "R5")){
+    if(strcmp(reg, "R5") == 0){
         return "101";
     }
-    if(strcmp(reg, "R6")){
+    if(strcmp(reg, "R6") == 0){
         return "110";
     }
-    if(strcmp(reg, "R7")){
+    if(strcmp(reg, "R7") == 0){
         return "111";
     }
     
@@ -302,7 +310,7 @@ char* getDecimalToBinary(char* chardec){
 
 char* getSignedDecimalToBinary(char* chardec){
     
-    char* binary = (char*) malloc(sizeof(char) * 9);
+    char* binary = (char*) malloc(sizeof(char) * 8);
     int dec = atoi(chardec);
     
     int div = 128;
@@ -321,5 +329,114 @@ char* getSignedDecimalToBinary(char* chardec){
     //printf("bin %s\n", binary);
     
     return binary;
+}
+
+void splitInTwo(char* sixteen_bit, char* decoded1, char* decoded2){
+    for(int i = 0; i < 8; i++){
+        decoded1[i] = sixteen_bit[i];
+        decoded2[i] = sixteen_bit[i+8];
+    }
+}
+
+
+char *replace(const char *src, const char *from, const char *to)
+{
+    /*
+     * Find out the lengths of the source string, text to replace, and
+     * the replacement text.
+     */
+    size_t size    = strlen(src) + 1;
+    size_t fromlen = strlen(from);
+    size_t tolen   = strlen(to);
+    /*
+     * Allocate the first chunk with enough for the original string.
+     */
+    char *value = malloc(size);
+    /*
+     * We need to return 'value', so let's make a copy to mess around with.
+     */
+    char *dst = value;
+    /*
+     * Before we begin, let's see if malloc was successful.
+     */
+    if ( value != NULL )
+    {
+        /*
+         * Loop until no matches are found.
+         */
+        for ( ;; )
+        {
+            /*
+             * Try to find the search text.
+             */
+            const char *match = strstr(src, from);
+            if ( match != NULL )
+            {
+                /*
+                 * Found search text at location 'match'. :)
+                 * Find out how many characters to copy up to the 'match'.
+                 */
+                size_t count = match - src;
+                /*
+                 * We are going to realloc, and for that we will need a
+                 * temporary pointer for safe usage.
+                 */
+                char *temp;
+                /*
+                 * Calculate the total size the string will be after the
+                 * replacement is performed.
+                 */
+                size += tolen - fromlen;
+                /*
+                 * Attempt to realloc memory for the new size.
+                 */
+                temp = realloc(value, size);
+                if ( temp == NULL )
+                {
+                    /*
+                     * Attempt to realloc failed. Free the previously malloc'd
+                     * memory and return with our tail between our legs. :(
+                     */
+                    free(value);
+                    return NULL;
+                }
+                /*
+                 * The call to realloc was successful. :) But we'll want to
+                 * return 'value' eventually, so let's point it to the memory
+                 * that we are now working with. And let's not forget to point
+                 * to the right location in the destination as well.
+                 */
+                dst = temp + (dst - value);
+                value = temp;
+                /*
+                 * Copy from the source to the point where we matched. Then
+                 * move the source pointer ahead by the amount we copied. And
+                 * move the destination pointer ahead by the same amount.
+                 */
+                memmove(dst, src, count);
+                src += count;
+                dst += count;
+                /*
+                 * Now copy in the replacement text 'to' at the position of
+                 * the match. Adjust the source pointer by the text we replaced.
+                 * Adjust the destination pointer by the amount of replacement
+                 * text.
+                 */
+                memmove(dst, to, tolen);
+                src += fromlen;
+                dst += tolen;
+            }
+            else /* No match found. */
+            {
+                /*
+                 * Copy any remaining part of the string. This includes the null
+                 * termination character.
+                 */
+                strcpy(dst, src);
+                break;
+            }
+        }
+    }
+    return value;
 }
 
