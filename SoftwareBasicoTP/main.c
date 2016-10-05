@@ -16,10 +16,10 @@ struct AST{
     int value;
     char* label_name;
 };
-const char* file_in = "teste.a";
-const char* file_out = "output.mif";
-/*const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";*/
-/*const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";*/
+/*const char* file_in = "teste.a";*/
+/*const char* file_out = "output.mif";*/
+const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
+const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
 
 int readFile(char** input);
 void split_line();
@@ -94,16 +94,13 @@ int main(int argc, const char * argv[]) {
         strcpy(input_index, input[line_number]);
         split_line(line, input_index);
         int has_label = check_label(line[0]);
-        int is_comment = check_comment(line[0]);
         int is_data = check_data(line[1+has_label]);
         
         
         if(is_data){
             continue;
         }
-        if(is_comment){
-            continue;
-        }
+        
         
         /*Cada pedaÃ§o da instrucao em line[pos] agora*/
         decode(line, output, line_number, has_label, ast);
@@ -168,17 +165,6 @@ void split_line(char** line, char* input){
 int check_label(char* line){
     switch (line[0]) {
         case '_':
-            return 1;
-            break;
-        default:
-            return 0;
-            break;
-    }
-}
-
-int check_comment(char* line){
-    switch (line[0]) {
-        case ';':
             return 1;
             break;
         default:
