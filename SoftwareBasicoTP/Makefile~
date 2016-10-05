@@ -1,6 +1,6 @@
 all: SB
 SB: decoder.o main.o
-	gcc -o SB decoder.o main.o -W -Wall
+	gcc -o SB decoder.o main.o
 decoder.o: Decoder.h
 	gcc -o decoder.o -c Decoder.h -W -Wall -ansi
 main.o: main.c decoder.o
