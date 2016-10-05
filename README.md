@@ -4,6 +4,6 @@ Rodou no meu Ubuntu
 
 Falta ainda:
 
-## ILC e tradução de labels e .datas no decoder
+## Tratar .data em operacoes de load etc 
 
 ## Documentar 

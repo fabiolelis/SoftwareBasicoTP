@@ -9,11 +9,11 @@
 
 #include "Decoder.h"
 
-/*const char* file_in = "W2-1.a";
-const char* file_out = "output.mif";*/
-const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
+const char* file_in = "teste.a";
+const char* file_out = "output.mif";
+/*const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
 const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
-
+*/
 
 int readFile(char** input);
 void split_line();
@@ -127,17 +127,19 @@ void savedata(char** output, int value, int line_number)
 
 int readFile(char* input[]){
     FILE* fp;
-    char* line = NULL;
+    char* line = (char*) malloc(sizeof(char) * 32);
     size_t len = 0;
-    ssize_t read;
+    ssize_t read = 0;
     int i = 0;
-    /*printf("\n reading");*/
+    printf("\n reading\n");
     fp = fopen(file_in , "r");
     if (fp == NULL)
         printf("Endereco invalido");
     
+    printf(" antes de while");
     while (((read = getline(&line, &len, fp)) !=-1)) {
         
+	printf(" getline %d ", i);
         input[i] = (char *) malloc(200*sizeof(char));
         strcpy(line, replace(line, "\t", ""));
         
