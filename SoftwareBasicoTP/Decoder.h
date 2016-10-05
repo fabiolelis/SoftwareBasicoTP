@@ -88,7 +88,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     
     char* sixteen_bit_inst = (char *) malloc(20*sizeof(char));
     
-    /*strcpy(sixteen_bit_inst, "0000000000000000");*/
+    strcpy(sixteen_bit_inst, "0000000000000000");
      /*em caso de instruÃ§Ã£o nÃ£o reconhecida, encerra*/
     
     if(strcmp(instruction, "exit") == 0){
@@ -141,8 +141,8 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     
     else if(strcmp(instruction, "jump") == 0){ /*00111 000 AAAAAAAA*/
         strcpy(sixteen_bit_inst, "00111"); /*5bits*/
-        strcat(sixteen_bit_inst, "000"); /*3bits*/
-        int counter = searchILC (ilc, op2);
+        strcat(sixteen_bit_inst, "000"); /*3bis*/
+        int counter = searchILC (ilc, op1);
         strcat(sixteen_bit_inst, getDecimalToBinary2(ilc[counter].line)); /*8bits*/
     }
     
@@ -266,28 +266,17 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
         int counter = searchILC (ilc, op2);
         strcat(sixteen_bit_inst, getDecimalToBinary2(ilc[counter].line)); /*8bits*/
     }
-    else {
-        sixteen_bit_inst = NULL;
-    }
     
-    
-    if(sixteen_bit_inst != NULL){
-        printf("inst %s : ", instruction);
-        printf("%s, \n", sixteen_bit_inst);
-        splitInTwo(sixteen_bit_inst, decoded1, decoded2);
-    }
-    else {
-        decoded1 = NULL;
-        decoded2 = NULL;
-    }
-    
+    printf("inst %s : ", instruction);
+    printf("%s, \n", sixteen_bit_inst);
+    splitInTwo(sixteen_bit_inst, decoded1, decoded2);
     
 }
 
 int searchILC (ILC* ilc, char* name)
 {
     int i = 0;
-    while(!(strcmp(ilc[i].label_name, name)))
+    while((strcmp(ilc[i].label_name, name)) != 0)
     {
         i++;
     }

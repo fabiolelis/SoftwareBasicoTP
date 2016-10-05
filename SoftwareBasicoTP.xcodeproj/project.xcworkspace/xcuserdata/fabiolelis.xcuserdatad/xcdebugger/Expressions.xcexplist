@@ -14,7 +14,7 @@
          contextName = "main:main.c">
          <PersistentStrings>
             <PersistentString
-               value = "input[2]">
+               value = "ilc[label_idx].label_name">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -23,6 +23,14 @@
          <PersistentStrings>
             <PersistentString
                value = "strcmp(instruction, &quot;lofadi&quot;)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "searchILC:Decoder.h">
+         <PersistentStrings>
+            <PersistentString
+               value = "ilc[3]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>

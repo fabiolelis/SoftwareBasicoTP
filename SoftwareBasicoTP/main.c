@@ -9,19 +9,9 @@
 
 #include "Decoder.h"
 
-/*
- typedef struct ilc_struct ILC;
- 
- struct ILC{
- int line;
- int size;
- int value;
- char* label_name;
- };
- */
 /*const char* file_in = "W2-1.a";
 const char* file_out = "output.mif";*/
-const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/W2-1.a";
+const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
 const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
 
 
@@ -48,49 +38,48 @@ int main(int argc, const char * argv[]) {
     fflush(stdout);
     
     init_output(output);
-    /*printf("%s", "\n create ilc");*/
-    ILC* ilc = (ILC*)malloc(sizeof(ILC)*20);
-    /*printf("\n ILC created");*/
+    ILC* ilc = (ILC*)malloc(sizeof(ILC)*256);
     
     int label_idx = 0;
-    int data_idx = 180;
+    int data_idx = 128;
     while(line_number < (input_size)){
         
-        /*printf("%s", "\n start loop");*/
         fflush(stdout);
         
         char** line = (char**)malloc(sizeof(char) * 6 * 150);
         char* input_index = (char*) malloc(sizeof(char) * 32);
         strcpy(input_index, input[line_number]);
         split_line(line, input_index);
-        int has_label = check_label(line[0]);
         
-        int is_data = check_data(line[2+has_label]);
+        int has_label = check_label(line[0]);
+        int is_data = check_data(line[1+has_label]);
+        
         if(has_label){
-            /*printf("%s"," tem label");*/
             fflush(stdout);
-            ilc[label_idx].line = line_number;
-            ilc[label_idx].label_name = line[0];
+            ilc[label_idx].line = line_number + 1; /*CPUSim conta a partir do 1*/
+            char* labelName = (char*)malloc(sizeof(char) * 32);
+            strcpy(labelName, line[0]);
+            strcpy(labelName, replace(labelName, ":", ""));
+            
+            ilc[label_idx].label_name = labelName;
             label_idx++;
         }
-        if(is_data){
-            /*printf("%s"," Ã© um .data");*/
-            ilc[label_idx].line = data_idx;
-            ilc[label_idx].label_name = line[1];
-            ilc[label_idx].size = atoi(line[2]);
-            ilc[label_idx].value = atoi(line[3]);
+        if(/* DISABLES CODE */ (0)){/*is_data*/
+            ilc[data_idx].line = data_idx;
+            ilc[data_idx].label_name = line[1];
+            ilc[data_idx].size = atoi(line[2]);
+            ilc[data_idx].value = atoi(line[3]);
             label_idx++;
-            savedata(output, ilc[label_idx].value, data_idx);
-            data_idx++;data_idx++;
+            /*Salvar data em posições de memória após o fim input_size*/
+            savedata(output, ilc[data_idx].value, data_idx);
+            data_idx++;/*data_idx++;*/
             
         }
-        /*printf("%s", " closing loop");*/
         fflush(stdout);
         
         line_number++;
     }
     fflush(stdout);
-    /*printf("%s", "\n end loop");*/
     
     line_number = 0;
     
@@ -114,10 +103,6 @@ int main(int argc, const char * argv[]) {
         
         
     }
-    
-    
-    
-    /*printf("\n end loop 2");*/
     
     writeFile(output, input_size);
     printf("\nwrote output in %s \n", file_in);
