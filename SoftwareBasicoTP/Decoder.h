@@ -3,14 +3,25 @@
 //  SoftwareBasicoTP
 //
 //  Created by Fabio Lelis on 02/10/16.
-//  Copyright © 2016 Fabio Lelis. All rights reserved.
+//  Copyright Â© 2016 Fabio Lelis. All rights reserved.
 //
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+typedef struct ast_struct AST;
 
-#include <Math.h>
+struct ast_struct{
+    int line;
+    int size;
+    int value;
+    char* label_name;
+};
 
 void init_output(char* output[]);
-void decode(char** line, char** output, int line_number, int has_label);
-void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2);
+void decode(char** line, char** output, int line_number, int has_label, AST* ast);
+void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, AST* ast);
 char* getRegisterToBinary(char* reg);
 char* getDecimalToBinary(char* chardec);
 char* getSignedDecimalToBinary(char* chardec);
@@ -19,6 +30,8 @@ char *replace(const char *src, const char *from, const char *to);
 
 void init_output(char* output[]){
     
+    
+    
     for(int i = 0; i < 256; i++){
         output[i] = (char *) malloc(20*sizeof(char));
         strcpy(output[i], "00000000");
@@ -26,10 +39,10 @@ void init_output(char* output[]){
 }
 
 
-void decode(char** line, char** output, int line_number, int has_label){
+void decode(char** line, char** output, int line_number, int has_label, AST* ast){
     char *decoded1 = (char *) malloc(8*sizeof(char));
     char *decoded2 = (char *) malloc(8*sizeof(char));
-
+    
     //printf("line %s %s\n", line[0], line[1]);
     char *instruction, *op1, *op2, *op3;
     instruction = (char *) malloc(20 * sizeof(char));
@@ -44,7 +57,7 @@ void decode(char** line, char** output, int line_number, int has_label){
     if(line[3+has_label] != NULL)
         strcpy(op3, line[3+has_label]);
     
-    getDecoded(instruction, op1, op2, op3, decoded1, decoded2);
+    getDecoded(instruction, op1, op2, op3, decoded1, decoded2, ast);
     
     printf("inst %s \n", instruction);
     
@@ -55,11 +68,11 @@ void decode(char** line, char** output, int line_number, int has_label){
     
 }
 
-void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2){
+void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, AST* ast ){
     
     char* sixteen_bit_inst = (char *) malloc(20*sizeof(char));
     
-    strcpy(sixteen_bit_inst, "0000000000000000"); //em caso de instrução não reconhecida, encerra
+    strcpy(sixteen_bit_inst, "0000000000000000"); //em caso de instruÃ§Ã£o nÃ£o reconhecida, encerra
     
     if(strcmp(instruction, "exit") == 0){
         strcpy(sixteen_bit_inst, "0000000000000000");
@@ -112,7 +125,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
         
         /*
          TODO: tratar jump label
-        */
+         */
         
     }
     
@@ -180,9 +193,9 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     if(strcmp(instruction, "call") == 0){ //10001 000 PPPPPPPP
         strcpy(sixteen_bit_inst, "10001"); //5bits
         strcat(sixteen_bit_inst, "000"); //3bits
-
+        
         /*
-         TODO: buscar o endereço do label "op1" na tabela
+         TODO: buscar o endereÃ§o do label "op1" na tabela
          */
         strcat(sixteen_bit_inst, getDecimalToBinary(op1)); //8bits
     }
@@ -249,7 +262,7 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     
     printf("%s, \n", sixteen_bit_inst);
     splitInTwo(sixteen_bit_inst, decoded1, decoded2);
-
+    
     
 }
 
@@ -300,7 +313,7 @@ char* getDecimalToBinary(char* chardec){
             strcat(binary, "0");
         
         div = div/2;
-
+        
     }
     
     return binary;
@@ -312,9 +325,9 @@ char* getSignedDecimalToBinary(char* chardec){
     char* binary = (char*) malloc(sizeof(char) * 8);
     int dec = atoi(chardec);
     strcpy(binary, "0");
-
+    
     int decNeg = dec;
-
+    
     if(dec < 0){
         dec *= -1;
         dec --;
@@ -331,7 +344,7 @@ char* getSignedDecimalToBinary(char* chardec){
         }
         
         div = div/2;
-    
+        
     }
     
     if(decNeg < 0){
@@ -398,4 +411,3 @@ char *replace(const char *src, const char *from, const char *to)
     }
     return value;
 }
-
