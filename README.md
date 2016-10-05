@@ -1,9 +1,8 @@
 # Software Basico TP
 
-Falta ainda:
+Rodou no meu Ubuntu
 
-## Rodar no Linux
-(tem uns tipos size_t que podem estar atrapalhando isso)
+Falta ainda:
 
 ## ILC e tradução de labels e .datas no decoder
 
