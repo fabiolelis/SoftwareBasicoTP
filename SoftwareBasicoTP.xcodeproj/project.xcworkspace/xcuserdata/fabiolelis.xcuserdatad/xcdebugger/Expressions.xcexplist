@@ -3,10 +3,18 @@
    version = "1.0">
    <ContextStates>
       <ContextState
-         contextName = "writeFile:main.c">
+         contextName = "split_line:main.c">
          <PersistentStrings>
             <PersistentString
-               value = "output[i]">
+               value = "line[pos]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "main:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "input[2]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -19,10 +27,18 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "main:main.c">
+         contextName = "writeFile:main.c">
          <PersistentStrings>
             <PersistentString
-               value = "output[5]">
+               value = "output[i]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "check_comment:main.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "strlen(line) == 0">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -30,18 +46,18 @@
          contextName = "decode:Decoder.h">
          <PersistentStrings>
             <PersistentString
-               value = "line[4]">
+               value = "input">
             </PersistentString>
             <PersistentString
-               value = "line[0]">
+               value = "line[1]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
       <ContextState
-         contextName = "split_line:main.c">
+         contextName = "readFile:main.c">
          <PersistentStrings>
             <PersistentString
-               value = "line[pos]">
+               value = "line[0]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
