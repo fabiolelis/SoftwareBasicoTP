@@ -16,10 +16,10 @@ struct AST{
     int value;
     char* label_name;
 };
-/*const char* file_in = "teste.a";*/
-/*const char* file_out = "output.mif";*/
-const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
-const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
+const char* file_in = "teste.a";
+const char* file_out = "output.mif";
+/*const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
+const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";*/
 
 int readFile(char** input);
 void split_line();
@@ -126,8 +126,8 @@ int main(int argc, const char * argv[]) {
 int readFile(char* input[]){
     FILE* fp;
     char* line = NULL;
-    size_t len = 0;
-    ssize_t read;
+    int len = 0;
+    int read;
     int i = 0;
     printf("\n reading");
     fp = fopen(file_in , "r");
