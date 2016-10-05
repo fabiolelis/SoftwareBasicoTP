@@ -1,13 +1,15 @@
-//
-//  main.c
-//  SoftwareBasicoTP
-//
-//  Created by Fabio Lelis on 25/09/16.
-//  Copyright Â© 2016 Fabio Lelis. All rights reserved.
-//
+/*
+  main.c
+  SoftwareBasicoTP
+
+  Created by Fabio Lelis on 25/09/16.
+  Copyright Â© 2016 Fabio Lelis. All rights reserved.
+*/
 
 
 #include "Decoder.h"
+
+/*
 typedef struct ast_struct AST;
 
 struct AST{
@@ -15,7 +17,7 @@ struct AST{
     int size;
     int value;
     char* label_name;
-};
+};*/
 /*const char* file_in = "teste.a";*/
 /*const char* file_out = "output.mif";*/
 const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";

@@ -1,9 +1,7 @@
 all: SB
-SB: decoder.o main.o
-	gcc -o SB decoder.o main.o -W -Wall
-decoder.o: Decoder.h
-	gcc -o decoder.o -c Decoder.h -W -Wall -ansi
-main.o: main.c decoder.o
+SB: main.o
+	gcc -o SB main.o
+main.o: main.c Decoder.h
 	gcc -o main.o -c main.c -W -Wall -ansi
 clean:
 	rm -rf *.o

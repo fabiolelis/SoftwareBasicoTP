@@ -6,10 +6,12 @@
   Copyright Â© 2016 Fabio Lelis. All rights reserved.
 */
 #define _GNU_SOURCE
+#include <sys/types.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
+
+
 typedef struct ast_struct AST;
 
 struct ast_struct{
@@ -373,9 +375,9 @@ void splitInTwo(char* sixteen_bit, char* decoded1, char* decoded2){
 
 char *replace(const char *src, const char *from, const char *to)
 {
-    int size    = strlen(src) + 1;
-    int fromlen = strlen(from);
-    int tolen   = strlen(to);
+    size_t size    = strlen(src) + 1;
+    size_t fromlen = strlen(from);
+    size_t tolen   = strlen(to);
     char *value = malloc(size);
     char *dst = value;
     if ( value != NULL )
@@ -385,7 +387,7 @@ char *replace(const char *src, const char *from, const char *to)
             const char *match = strstr(src, from);
             if ( match != NULL )
             {
-                int count = match - src;
+                size_t count = match - src;
                 char *temp;
                 size += tolen - fromlen;
                 temp = realloc(value, size);
