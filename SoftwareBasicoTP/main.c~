@@ -17,11 +17,13 @@ struct AST{
     int size;
     int value;
     char* label_name;
-};*/
-/*const char* file_in = "teste.a";*/
-/*const char* file_out = "output.mif";*/
-const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
-const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
+};
+*/
+const char* file_in = "teste.a";
+const char* file_out = "output.mif";
+/*const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
+const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";*/
+
 
 int readFile(char** input);
 void split_line();
