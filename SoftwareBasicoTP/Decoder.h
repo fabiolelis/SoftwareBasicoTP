@@ -88,12 +88,12 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     cleanOperator(op1);
     cleanOperator(op2);
     cleanOperator(op3);
-
+    
     
     char* sixteen_bit_inst = (char *) malloc(20*sizeof(char));
     
     strcpy(sixteen_bit_inst, "0000000000000000");
-     /*em caso de instruÃ§Ã£o nÃ£o reconhecida, encerra*/
+    /*em caso de instruÃ§Ã£o nÃ£o reconhecida, encerra*/
     
     if(strcmp(instruction, "exit") == 0){
         strcpy(sixteen_bit_inst, "0000000000000000");
@@ -306,18 +306,18 @@ int searchILC (ILC* ilc, char* name)
     
     for(i = 0; i < 64; i ++){
         if(ilc[i].label_name != NULL){
-           if(strcmp(ilc[i].label_name, name) == 0)
-               return i;
+            if(strcmp(ilc[i].label_name, name) == 0)
+                return i;
         }
     }
     return i;
     
     /*
-    while((strcmp(ilc[i].label_name, name)) != 0)
-    {
-        i++;
-    }
-    return i;*/
+     while((strcmp(ilc[i].label_name, name)) != 0)
+     {
+     i++;
+     }
+     return i;*/
 }
 
 
@@ -330,7 +330,7 @@ void cleanOperator(char* op){
     strcpy(op, replace(op, "\t", ""));
     strcpy(op, replace(op, " ", ""));
     strcpy(op, replace(op, ";", ""));
-
+    
 }
 
 char* getRegisterToBinary(char* reg){
@@ -406,8 +406,8 @@ char* getDecimalIntToBinary(int dec){
     
     
     return binary;
-
-
+    
+    
 }
 
 char* getDecimalToBinary(char* chardec){

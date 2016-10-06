@@ -5,6 +5,6 @@ O W2-1.a funcionou
 
 Falta ainda:
 
-## ILC e tradução de labels e .datas no decoder
+## Tratar .data em operacoes de load etc 
 
 ## Documentar 

@@ -10,7 +10,7 @@
 #include "Decoder.h"
 
 /*const char* file_in = "W2-1.a";
-const char* file_out = "output.mif";*/
+ const char* file_out = "output.mif";*/
 const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/W2-1.a";
 const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
 
@@ -40,7 +40,7 @@ int main(int argc, const char * argv[]) {
     init_output(output);
     ILC* ilc = (ILC*)malloc(sizeof(ILC)*64);
     ILC* ilcData = (ILC*)malloc(sizeof(ILC)*64);
-
+    
     int count_data = 0;
     while(line_number < (input_size)){
         fflush(stdout);
@@ -193,10 +193,10 @@ void split_line(char** line, char* input){
 }
 
 int check_label(char* line){
-
+    
     if(line == NULL)
         return 0;
-
+    
     switch (line[0]) {
         case '_':
             return 1;
