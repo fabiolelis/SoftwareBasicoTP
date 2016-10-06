@@ -11,7 +11,7 @@
 
 /*const char* file_in = "W2-1.a";
 const char* file_out = "output.mif";*/
-const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/teste.a";
+const char* file_in = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/W2-1.a";
 const char* file_out = "/Users/fabiolelis/Git/SoftwareBasicoTP/SoftwareBasicoTP/output.mif";
 
 
@@ -38,10 +38,28 @@ int main(int argc, const char * argv[]) {
     fflush(stdout);
     
     init_output(output);
-    ILC* ilc = (ILC*)malloc(sizeof(ILC)*256);
+    ILC* ilc = (ILC*)malloc(sizeof(ILC)*64);
+    ILC* ilcData = (ILC*)malloc(sizeof(ILC)*64);
+
+    int count_data = 0;
+    while(line_number < (input_size)){
+        fflush(stdout);
+        
+        char** line = (char**)malloc(sizeof(char) * 6 * 150);
+        char* input_index = (char*) malloc(sizeof(char) * 32);
+        strcpy(input_index, input[line_number]);
+        split_line(line, input_index);
+        
+        int has_label = check_label(line[0]);
+        int is_data = check_data(line[1+has_label]);
+        count_data += is_data;
+        line_number++;
+    }
     
+    
+    line_number = 0;
     int label_idx = 0;
-    int data_idx = 128;
+    int data_idx = 0;
     while(line_number < (input_size)){
         
         fflush(stdout);
@@ -56,7 +74,7 @@ int main(int argc, const char * argv[]) {
         
         if(has_label){
             fflush(stdout);
-            ilc[label_idx].line = line_number + 1; /*CPUSim conta a partir do 1*/
+            ilc[label_idx].line = 2*line_number; /*CPUSim conta a partir do 1*/
             char* labelName = (char*)malloc(sizeof(char) * 32);
             strcpy(labelName, line[0]);
             strcpy(labelName, replace(labelName, ":", ""));
@@ -64,14 +82,19 @@ int main(int argc, const char * argv[]) {
             ilc[label_idx].label_name = labelName;
             label_idx++;
         }
-        if(/* DISABLES CODE */ (0)){/*is_data*/
-            ilc[data_idx].line = data_idx;
-            ilc[data_idx].label_name = line[1];
-            ilc[data_idx].size = atoi(line[2]);
-            ilc[data_idx].value = atoi(line[3]);
+        if(is_data){
+            ilcData[data_idx].line = 2*data_idx + 2*(input_size - count_data);
+            
+            char* labelName = (char*)malloc(sizeof(char) * 32);
+            strcpy(labelName, line[0]);
+            strcpy(labelName, replace(labelName, ":", ""));
+            ilcData[data_idx].label_name = labelName;
+            
+            ilcData[data_idx].size = atoi(line[2]);
+            ilcData[data_idx].value = atoi(line[3]);
             label_idx++;
             /*Salvar data em posições de memória após o fim input_size*/
-            savedata(output, ilc[data_idx].value, data_idx);
+            savedata(output, ilcData[data_idx].value, ilcData[data_idx].line);
             data_idx++;/*data_idx++;*/
             
         }
@@ -90,7 +113,7 @@ int main(int argc, const char * argv[]) {
         strcpy(input_index, input[line_number]);
         split_line(line, input_index);
         int has_label = check_label(line[0]);
-        int is_data = check_data(line[2+has_label]);
+        int is_data = check_data(line[1+has_label]);
         
         if(is_data){
             line_number++;
@@ -98,7 +121,7 @@ int main(int argc, const char * argv[]) {
         }
         
         /*Cada pedaÃ§o da instrucao em line[pos] agora*/
-        decode(line, output, line_number, has_label, ilc);
+        decode(line, output, line_number, has_label, ilc, ilcData);
         line_number++;
         
         
@@ -120,8 +143,8 @@ void savedata(char** output, int value, int line_number)
     char* decoded2 = (char*) malloc(sizeof(char) * 8);
     strcpy(binary, getDecimalToBinary3(value));
     splitInTwo(binary, decoded1, decoded2);
-    strcpy(output[2*line_number], decoded1);
-    strcpy(output[2*line_number + 1], decoded2);
+    strcpy(output[line_number], decoded1);
+    strcpy(output[line_number + 1], decoded2);
     
 }
 
@@ -152,7 +175,7 @@ int readFile(char* input[]){
     
     free(line);
     
-    return i - 1;
+    return i ;
     
 }
 

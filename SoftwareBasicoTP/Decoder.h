@@ -21,18 +21,23 @@ struct ilc_struct{
     char* label_name;
 };
 
+
 void init_output(char* output[]);
-void decode(char** line, char** output, int line_number, int has_label, ILC* ilc);
-void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, ILC* ilc);
+void decode(char** line, char** output, int line_number, int has_label, ILC* ilc, ILC* ilcData);
+void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, ILC* ilc, ILC* ilcData);
 void cleanOperator(char* op);
 char* getRegisterToBinary(char* reg);
+char* getDecimalIntToBinary(int dec);
 char* getDecimalToBinary(char* chardec);
 char* getSignedDecimalToBinary(char* chardec);
 void splitInTwo(char* sixteen_bit, char* decoded1, char* decoded2);
 char *replace(const char *src, const char *from, const char *to);
 int searchILC (ILC* ilc, char* name);
+
 char* getDecimalToBinary2(int dec);
 char* getDecimalToBinary3(int dec);
+
+int isNumeric(const char *str);
 
 void init_output(char* output[]){
     
@@ -43,8 +48,7 @@ void init_output(char* output[]){
     }
 }
 
-
-void decode(char** line, char** output, int line_number, int has_label, ILC* ilc){
+void decode(char** line, char** output, int line_number, int has_label, ILC* ilc, ILC* ilcData){
     
     if(line == NULL)
         return;
@@ -67,7 +71,7 @@ void decode(char** line, char** output, int line_number, int has_label, ILC* ilc
         strcpy(op3, line[3+has_label]);
     
     printf("%d ", line_number);
-    getDecoded(instruction, op1, op2, op3, decoded1, decoded2, ilc);
+    getDecoded(instruction, op1, op2, op3, decoded1, decoded2, ilc, ilcData);
     
     if(decoded1 != NULL && decoded2!= NULL){
         output[2*line_number + 1] = (char *) malloc(20*sizeof(char));
@@ -78,7 +82,7 @@ void decode(char** line, char** output, int line_number, int has_label, ILC* ilc
     
 }
 
-void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, ILC* ilc){
+void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decoded1, char* decoded2, ILC* ilc, ILC* ilcData){
     
     cleanOperator(instruction);
     cleanOperator(op1);
@@ -96,25 +100,40 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     }
     
     else if(strcmp(instruction, "loadi") == 0){ /*00001 RRR AAAAAAAA*/
+        
         strcpy(sixteen_bit_inst, "00001"); /*5bits*/
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); /*3bits*/
-        /*TODO: tratar data input*/
         
-        strcat(sixteen_bit_inst, getDecimalToBinary(op2)); /*8bits*/
+        if(isNumeric(op2)){
+            strcat(sixteen_bit_inst, getDecimalToBinary(op2)); /*3bits*/
+        }
+        else{
+            int counter = searchILC (ilcData, op2);
+            int line = ilcData[counter].line;
+            strcat(sixteen_bit_inst, getDecimalIntToBinary(line)); /*3bits*/
+        }
+        
     }
     
     else if(strcmp(instruction, "storei") == 0){ /*00010 RRR AAAAAAAA*/
         strcpy(sixteen_bit_inst, "00010"); /*5bits*/
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); /*3bits*/
-        /*TODO: tratar data input*/
         
-        strcat(sixteen_bit_inst, getDecimalToBinary(op2)); /*8bits*/
+        if(isNumeric(op2)){
+            strcat(sixteen_bit_inst, getDecimalToBinary(op2)); /*3bits*/
+        }
+        else{
+            int counter = searchILC (ilcData, op2);
+            int line = ilcData[counter].line;
+            strcat(sixteen_bit_inst, getDecimalIntToBinary(line)); /*3bits*/
+        }
     }
     
     else if(strcmp(instruction, "add") == 0){ /*00011 RRR RRR 00000*/
         strcpy(sixteen_bit_inst, "00011"); /*5bits*/
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); /*3bits*/
         strcat(sixteen_bit_inst, getRegisterToBinary(op2)); /*3bits*/
+        
         strcat(sixteen_bit_inst, "00000"); /*5bits*/
     }
     
@@ -240,7 +259,15 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
     else if(strcmp(instruction, "addi") == 0){ /*10111 000 CCCCCCCC*/
         strcpy(sixteen_bit_inst, "10111"); /*5bits*/
         strcat(sixteen_bit_inst, getRegisterToBinary(op1)); /*3bits*/
-        strcat(sixteen_bit_inst, getSignedDecimalToBinary(op2)); /*8bits*/
+        
+        if(isNumeric(op2)){
+            strcat(sixteen_bit_inst, getSignedDecimalToBinary(op2)); /*3bits*/
+        }
+        else{
+            int counter = searchILC (ilcData, op2);
+            int line = ilcData[counter].line;
+            strcat(sixteen_bit_inst, getDecimalIntToBinary(line)); /*3bits*/
+        }
     }
     
     else if(strcmp(instruction, "sgt") == 0){ /*11000 RRR RRR RRR 00*/
@@ -276,12 +303,23 @@ void getDecoded(char* instruction, char* op1, char* op2, char* op3,  char* decod
 int searchILC (ILC* ilc, char* name)
 {
     int i = 0;
+    
+    for(i = 0; i < 64; i ++){
+        if(ilc[i].label_name != NULL){
+           if(strcmp(ilc[i].label_name, name) == 0)
+               return i;
+        }
+    }
+    return i;
+    
+    /*
     while((strcmp(ilc[i].label_name, name)) != 0)
     {
         i++;
     }
-    return i;
+    return i;*/
 }
+
 
 void cleanOperator(char* op){
     if(op == NULL){
@@ -298,6 +336,7 @@ void cleanOperator(char* op){
 char* getRegisterToBinary(char* reg){
     
     cleanOperator(reg);
+    
     
     if(strcmp(reg, "R0") == 0){
         return "000";
@@ -325,6 +364,50 @@ char* getRegisterToBinary(char* reg){
     }
     
     return NULL;
+}
+
+char* getDecimalIntToBinary(int dec){
+    
+    char* binary = (char*) malloc(sizeof(char) * 8);
+    strcpy(binary, "0");
+    
+    int decNeg = dec;
+    
+    if(dec < 0){
+        dec *= -1;
+        dec --;
+    }
+    
+    int div = 64;
+    while(div >= 1){
+        if(dec >= div){
+            strcat(binary, "1");
+            dec = dec - div;
+        }
+        else{
+            strcat(binary, "0");
+        }
+        
+        div = div/2;
+        
+    }
+    
+    if(decNeg < 0){
+        int i = 0;
+        for(i = 0; i < 8; i++){
+            if(binary[i] == '0'){
+                binary[i] = '1';
+            }
+            else{
+                binary[i] = '0';
+            }
+        }
+    }
+    
+    
+    return binary;
+
+
 }
 
 char* getDecimalToBinary(char* chardec){
@@ -366,9 +449,18 @@ char* getDecimalToBinary2(int dec){
     return binary;
 }
 
+/*Complemento de dois*/
 char* getDecimalToBinary3(int dec){
     char* binary = (char*) malloc(sizeof(char) * 16);
     int div = 32768;
+    
+    int decNeg = dec;
+    
+    if(dec < 0){
+        dec *= -1;
+        dec --;
+    }
+    
     while(div >= 1){
         if(dec >= div){
             strcat(binary, "1");
@@ -379,6 +471,18 @@ char* getDecimalToBinary3(int dec){
         
         div = div/2;
         
+    }
+    
+    if(decNeg < 0){
+        int i = 0;
+        for(i = 0; i < 16; i++){
+            if(binary[i] == '0'){
+                binary[i] = '1';
+            }
+            else{
+                binary[i] = '0';
+            }
+        }
     }
     
     return binary;
@@ -477,4 +581,14 @@ char *replace(const char *src, const char *from, const char *to)
         }
     }
     return value;
+}
+int isNumeric(const char *str)
+{
+    while(*str != '\0')
+    {
+        if(*str < '0' || *str > '9')
+            return 0;
+        str++;
+    }
+    return 1;
 }

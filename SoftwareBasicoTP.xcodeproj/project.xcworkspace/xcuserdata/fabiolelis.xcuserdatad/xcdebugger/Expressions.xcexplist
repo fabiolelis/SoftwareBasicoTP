@@ -14,7 +14,7 @@
          contextName = "main:main.c">
          <PersistentStrings>
             <PersistentString
-               value = "ilc[label_idx].label_name">
+               value = "ilcData[data_idx]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
@@ -30,7 +30,7 @@
          contextName = "searchILC:Decoder.h">
          <PersistentStrings>
             <PersistentString
-               value = "ilc[3]">
+               value = "ilc[0]">
             </PersistentString>
          </PersistentStrings>
       </ContextState>
