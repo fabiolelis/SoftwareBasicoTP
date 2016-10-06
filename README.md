@@ -5,6 +5,8 @@ O W2-1.a funcionou
 
 Falta ainda:
 
-## Tratar .data em operacoes de load etc 
+Tratar .data em operacoes de load etc 
 
-## Documentar 
+Documentar 
+
+....
