@@ -69,13 +69,16 @@ int main(int argc, const char * argv[]) {
         strcpy(input_index, input[line_number]);
         split_line(line, input_index);
         
+        char* labelName = (char*)malloc(sizeof(char) * 32);
+
+        
         int has_label = check_label(line[0]);
         int is_data = check_data(line[1+has_label]);
         
         if(has_label){
+            labelName = (char*)realloc(labelName, sizeof(char) * 32);
             fflush(stdout);
             ilc[label_idx].line = 2*line_number; /*CPUSim conta a partir do 1*/
-            char* labelName = (char*)malloc(sizeof(char) * 32);
             strcpy(labelName, line[0]);
             strcpy(labelName, replace(labelName, ":", ""));
             
@@ -85,7 +88,6 @@ int main(int argc, const char * argv[]) {
         if(is_data){
             ilcData[data_idx].line = 2*data_idx + 2*(input_size - count_data);
             
-            char* labelName = (char*)malloc(sizeof(char) * 32);
             strcpy(labelName, line[0]);
             strcpy(labelName, replace(labelName, ":", ""));
             ilcData[data_idx].label_name = labelName;
@@ -93,7 +95,7 @@ int main(int argc, const char * argv[]) {
             ilcData[data_idx].size = atoi(line[2]);
             ilcData[data_idx].value = atoi(line[3]);
             label_idx++;
-            /*Salvar data em posições de memória após o fim input_size*/
+            /*Salvar data em posições de memória após o fim input_size ... */
             savedata(output, ilcData[data_idx].value, ilcData[data_idx].line);
             data_idx++;/*data_idx++;*/
             

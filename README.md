@@ -5,8 +5,7 @@ O W2-1.a funcionou
 
 Falta ainda:
 
-Tratar .data em operacoes de load etc 
+Fazer funcionar no linux
 
 Documentar 
 
-....
